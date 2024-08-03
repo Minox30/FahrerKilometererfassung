@@ -325,7 +325,7 @@ public class KilometererfassungGUI extends JFrame {
         }
     }
 // Aktualisiert die UI-Elemente für den gegebenen Fahrer
-    public void updateUI (Fahrer fahrer){
+    public void updateFahrerUI (Fahrer fahrer){
         SwingUtilities.invokeLater(() -> {
             updateFahrtenTabelle(fahrer);
             updateGesamtkilometer(fahrer);
@@ -366,15 +366,4 @@ public class KilometererfassungGUI extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                KilometerterfassungGUI gui = new KilometererfassungGUI();
-                gui.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Fehler beim Starten der Anwendung" + e.getMessage());
-            }
-        });
-    }
 
