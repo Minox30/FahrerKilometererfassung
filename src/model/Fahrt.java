@@ -7,7 +7,7 @@ public class Fahrt implements Comparable<Fahrt>{
     private String startort;
     private int kilometer;
 
-    public Fahrt(LocalDate datum, String startiort, int kilometer) {
+    public Fahrt(LocalDate datum, String startort, int kilometer) {
         this.datum = datum;
         this.startort = startort;
         this.kilometer = kilometer;
