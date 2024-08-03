@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Fahrer {
@@ -36,6 +37,7 @@ public class Fahrer {
     // Methode zum Hinzufügen einer Fahrt
     public void addFahrt(Fahrt fahrt){
         fahrten.add(fahrt);
+        Collections.sort(fahrten);
     }
 
     @Override

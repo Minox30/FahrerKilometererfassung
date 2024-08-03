@@ -303,7 +303,12 @@ public class KilometererfassungGUI extends JFrame {
         try {
             // konvertiert String-Datum zu LocalDate
             LocalDate datum = LocalDate.parse(datumString, dateformatter);
-            // kovertiert die Kilometereingabe in einen Integer
+
+            // Überprüft, ob das eingegebene Datum in der Zukunft liegt
+            if (datum.isAfter(LocalDate.now())){
+                JOptionPane.showMessageDialog(mainPanel,"Das Datum darf nicht in der Zukunft liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+            // konvertiert die Kilometereingabe in einen Integer
             int km = Integer.parseInt(kilometer);
             // Überprüft, ob die Eingabe der Kilometer positiv ist
             if (km < 0) {
