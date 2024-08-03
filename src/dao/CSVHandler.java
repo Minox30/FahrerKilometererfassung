@@ -16,7 +16,15 @@ public class CSVHandler {
 
     // Methode zum Laden der Daten aus der CSV-Datei
     public List<Fahrer> loadData() {
+        System.out.println("CSVHandler loadData");
         List<Fahrer> fahrer = new ArrayList<>(); // Liste zur Speicherung der Fahrer
+        File file = new File(CSV_File);
+        System.out.println("CSV-Datei.Pfad: " + file.getName());
+
+        //Überprüft, ob die Datei existiert und falls nicht, wird diese erstellt.
+        if (!file.exists()) {
+            createInitialCSV();
+        }
         // Nutzung des BufferedReader zum Lesen der Datei.
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_File))) {
             String line;
@@ -43,6 +51,16 @@ public class CSVHandler {
         return fahrer;
     }
 
+    // Methode zum Erstellen einer leeren CSV-Datei
+    private void createInitialCSV() {
+        try {
+            new FileOutputStream(CSV_File).close();
+            System.out.println("CSV-Datei wurde erstellt: " + CSV_File);
+        } catch (IOException e) {
+            System.out.println("Fehler beim Erstellen der Datei: " + e.getMessage());
+        }
+    }
+
     // Methode zum Speichern der Daten in der CSV-Datei
     public void saveData(List<Fahrer> fahrer) {
         // Öffnet einen BufferedWriter für die CSV-Datei.
@@ -52,7 +70,12 @@ public class CSVHandler {
                 bw.write(String.format("%s,%s,%s%n", f.getPersonalnummer(),f.getVorname(), f.getNachname()));
                 for (Fahrt fahrt : f.getFahrten()){
                     // Schreibt die Fahrt-Informationen in die Datei.
-                    bw.write(String.format("%s,%s,%s%n",f.getPersonalnummer(),fahrt.getDatum().format(Date_FORMATTER), fahrt.getStartort(), fahrt.getKilometer()));
+                    bw.write(String.format("%s,%s,%s%n",
+                            f.getPersonalnummer(),
+                            fahrt.getDatum().format(Date_FORMATTER),
+                            fahrt.getStartort(),
+                            fahrt.getKilometer()));
+
                 }
             }
         } catch (IOException e) {

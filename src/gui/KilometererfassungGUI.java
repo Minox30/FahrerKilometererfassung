@@ -36,25 +36,33 @@ public class KilometererfassungGUI extends JFrame {
     private DateTimeFormatter dateformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public KilometererfassungGUI() {
+        System.out.println("Starte GUI-Initialisierung");
         createUIComponents();
+        System.out.println("UI-Komponenten erstellt");
         addListeners();
+        System.out.println("Listener hinzugefügt");
         fahrerMap = new HashMap<>();
         csvHandler = new CSVHandler();
-        loadData();
+        System.out.println("CSV-Handler erstellt");
+        initialisiereFahrerDaten();
+        System.out.println("Fahrer-Daten erstellt");
         this.setContentPane(mainPanel);
         this.pack();
+        System.out.println("GUI-Initialisierung abgeschlossen");
 
 
     }
-    // Methode zum Laden der Daten aus der CSV-Datei
-    private void loadData() {
+    // Methode initialisiert die Fahrerdaten und lädt sie in die GUI
+    private void initialisiereFahrerDaten() {
+        fahrerMap = new HashMap<>();
+
         List<Fahrer> fahrer = csvHandler.loadData();
-        for (Fahrer f : fahrer) {
-            fahrerMap.put(f.getPersonalnummer(),f);
+        for (Fahrer f : fahrer){
+            fahrerMap.put(f.getPersonalnummer(), f);
             fahrerComboBox.addItem(f.toString());
 
+            System.out.println("Fahrerdaten in GUI geladen");
         }
-
     }
 
     // Methode zum Speichern und Beenden des Programms
@@ -357,7 +365,10 @@ public class KilometererfassungGUI extends JFrame {
             } else {
 
                 // Tabelle leeren und Gesamtkilometer zurücksetzen, wenn kein Fahrer ausgewählt ist
-                ((DefaultTableModel) fahrtenTable.getModel()).removeRow(0);
+                DefaultTableModel model = (DefaultTableModel) fahrtenTable.getModel();
+                while (model.getRowCount() > 0) {
+                    model.removeRow(0);
+                }
                 gesamtkilometerLabel.setText("Gesamtkilometer: 0");
             }
         }
