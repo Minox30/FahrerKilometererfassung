@@ -55,8 +55,9 @@ public class KilometererfassungGUI extends JFrame {
     // Methode initialisiert die Fahrerdaten und lädt sie in die GUI
     private void initialisiereFahrerDaten() {
         fahrerMap = new HashMap<>();
-
         List<Fahrer> fahrer = csvHandler.loadData();
+        fahrerComboBox.removeAllItems();
+        fahrerComboBox.addItem("Bitte Fahrer auswählen");
         for (Fahrer f : fahrer){
             fahrerMap.put(f.getPersonalnummer(), f);
             fahrerComboBox.addItem(f.toString());

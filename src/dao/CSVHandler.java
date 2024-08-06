@@ -7,7 +7,9 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CSVHandler {
 
@@ -16,17 +18,21 @@ public class CSVHandler {
 
     // Methode zum Laden der Daten aus der CSV-Datei
     public List<Fahrer> loadData() {
-        System.out.println("CSVHandler loadData");
-        List<Fahrer> fahrer = new ArrayList<>(); // Liste zur Speicherung der Fahrer
+        List<Fahrer> fahrer = new ArrayList<>();// Liste zur Speicherung der Fahrer
+        Map<String, Fahrer> fahrerMap = new HashMap<>();
         File file = new File(CSV_File);
-        System.out.println("CSV-Datei.Pfad: " + file.getName());
 
         //Überprüft, ob die Datei existiert und falls nicht, wird diese erstellt.
         if (!file.exists()) {
-            createInitialCSV();
-        }
+            try {
+                file.createNewFile();
+            System.out.println("Neue CSV-Datei wurde erstellt: " + CSV_File);
+        }catch (IOException e) {
+                System.out.println("Fehler beim Erstellen der CSV-Datei" + e.getMessage());
+                return fahrer;
+            }
         // Nutzung des BufferedReader zum Lesen der Datei.
-        try (BufferedReader br = new BufferedReader(new FileReader(CSV_File))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             // Zeilen werden so lange gelesen bis null zurückgegeben wird und somit das Ende der Datei erreicht ist.
             while ((line = br.readLine()) != null) {
@@ -46,7 +52,7 @@ public class CSVHandler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Fehler beim Lesen der CSV-Datei" + e.getMessage());
         }
         return fahrer;
     }
