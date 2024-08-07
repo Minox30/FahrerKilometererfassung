@@ -39,13 +39,13 @@ public class KilometererfassungGUI extends JFrame {
         System.out.println("Starte GUI-Initialisierung");
         createUIComponents();
         System.out.println("UI-Komponenten erstellt");
-        addListeners();
-        System.out.println("Listener hinzugefügt");
         fahrerMap = new HashMap<>();
         csvHandler = new CSVHandler();
         System.out.println("CSV-Handler erstellt");
         initialisiereFahrerDaten();
         System.out.println("Fahrer-Daten erstellt");
+        addListeners();
+        System.out.println("Listener hinzugefügt");
         this.setContentPane(mainPanel);
         this.pack();
         System.out.println("GUI-Initialisierung abgeschlossen");
@@ -167,6 +167,7 @@ public class KilometererfassungGUI extends JFrame {
     }
 
     private void addListeners() {
+
         neuerFahrerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -279,16 +280,16 @@ public class KilometererfassungGUI extends JFrame {
         // Holt den ausgewählten Fahrer aus der ComboBox
         String ausgewaehlterFahrerString = (String) fahrerComboBox.getSelectedItem();
 
-        // Überprüft, on ein Fahrer ausgewählt wurde
+        // Überprüft, ob ein Fahrer ausgewählt wurde
         if ("Bitte Fahrer auswählen".equals(ausgewaehlterFahrerString)) {
             JOptionPane.showMessageDialog(mainPanel, "Bitte wählen Sie zuerst einen Fahrer aus", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Extrahiere die Personalnummer aus dem ausgewählten Fahrer-String
-        String personalnumer = ausgewaehlterFahrerString.split(" ")[0];
+        String personalnummer = ausgewaehlterFahrerString.split(" ")[0];
         // Holt das Fahrer-Objekt aus der Map
-        Fahrer ausgewaehlterFahrer = fahrerMap.get(personalnumer);
+        Fahrer ausgewaehlterFahrer = fahrerMap.get(personalnummer);
 
         // Extrahiert die Eingaben und entfernt die Leerzeichen
         String datumString = datumField.getText().trim();
@@ -319,7 +320,7 @@ public class KilometererfassungGUI extends JFrame {
             Fahrt neueFahrt = new Fahrt(datum, startort, km);
             ausgewaehlterFahrer.addFahrt(neueFahrt);
 
-            // akutalisiere UI
+            // aktualisiert das UI
             updateFahrtenTabelle(ausgewaehlterFahrer);
             updateGesamtkilometer(ausgewaehlterFahrer);
 
@@ -328,7 +329,6 @@ public class KilometererfassungGUI extends JFrame {
             startortField.setText("");
             kilometerField.setText("");
 
-            // Erfolgsmeldung
             JOptionPane.showMessageDialog(mainPanel, "Neue Fahrt wurde hinzugefügt", "Fahrt hinzugefügt", JOptionPane.INFORMATION_MESSAGE);
         } catch (DateTimeParseException e) {
             // Fängt Fehler beim Parsen des Datums ab

@@ -14,18 +14,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 
-
 public class FileWatcherThread extends Thread {
     private final Path fileToWatch;
     private final Map<String, Fahrer> fahrerMap;
     private final KilometererfassungGUI gui;
     private final DateTimeFormatter dateFormatter;
 
-    public FileWatcherThread (String fileName, Map <String, Fahrer> fahrerMap, KilometererfassungGUI gui, DateTimeFormatter dateFromatter) {
+    public FileWatcherThread (String fileName, Map <String, Fahrer> fahrerMap, KilometererfassungGUI gui, DateTimeFormatter dateFormatter) {
         this.fileToWatch = Paths.get(fileName);
     this.fahrerMap = fahrerMap;
     this.gui = gui;
-    this.dateFormatter = dateFromatter;
+    this.dateFormatter = dateFormatter;
     }
 
     @Override
@@ -66,7 +65,7 @@ private void processFile() {
                             throw new IllegalArgumentException("negative Kilometerangabe in der Datei gefunden");
                         }
                         Fahrer fahrer = fahrerMap.get(personalnummer);
-                        if (fahrer == null) {
+                        if (fahrer != null) {
                             Fahrt neueFahrt = new Fahrt(datum, startort, kilometer);
                             fahrer.addFahrt(neueFahrt);
                             SwingUtilities.invokeLater(() -> gui.updateFahrerUI(fahrer));
