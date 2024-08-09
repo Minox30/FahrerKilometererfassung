@@ -35,8 +35,8 @@ public class ExterneFahrtenThread extends Thread {
                 System.out.println("Prüfe auf externe Datei");
                 // Überprüft, ob die Datei existiert
                 if (Files.exists(externeFahrten)) {
-                    processFile();
                     System.out.println("Externe Datei wurde eingelesen.");
+                    processFile();
                 }
 // Wartet 60 Sekunden bis zur nächsten Überprüfung
                 Thread.sleep(60000);
@@ -71,12 +71,12 @@ public class ExterneFahrtenThread extends Thread {
                     SwingUtilities.invokeLater(() -> gui.updateFahrerUI(fahrer));
                 }
             }
-            // Löscht die Datei nach der Verarbeitung
-            Files.delete(externeFahrten);
-            System.out.println("Datei wurde verarbeitet und gelöscht" + EXTERNE_FAHRTEN);
 
         } catch (IllegalArgumentException e) {
             System.err.println("Fehler beim Verarbeiten der Datei: " + e.getMessage());
         }
+        // Löscht die Datei nach der Verarbeitung
+        Files.delete(externeFahrten);
+        System.out.println("Datei wurde verarbeitet und gelöscht " + EXTERNE_FAHRTEN);
     }
 }
