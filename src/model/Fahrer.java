@@ -21,21 +21,25 @@ public class Fahrer {
     public String getPersonalnummer() {
         return personalnummer;
     }
+
     public String getVorname() {
         return vorname;
     }
+
     public String getNachname() {
         return nachname;
     }
+
     public void setNachname(String nachname) {
         this.nachname = nachname;
     }
-    public List<Fahrt> getFahrten(){
+
+    public List<Fahrt> getFahrten() {
         return fahrten;
     }
 
     // Methode zum Hinzufügen einer Fahrt
-    public void addFahrt(Fahrt fahrt){
+    public void addFahrt(Fahrt fahrt) {
         fahrten.add(fahrt);
         Collections.sort(fahrten);
     }

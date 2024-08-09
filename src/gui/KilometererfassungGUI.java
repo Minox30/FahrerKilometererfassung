@@ -37,31 +37,40 @@ public class KilometererfassungGUI extends JFrame {
 
     public KilometererfassungGUI() {
         System.out.println("Starte GUI-Initialisierung");
-        createUIComponents();
-        System.out.println("UI-Komponenten erstellt");
-        fahrerMap = new HashMap<>();
-        csvHandler = new CSVHandler();
-        System.out.println("CSV-Handler erstellt");
-        initialisiereFahrerDaten();
-        System.out.println("Fahrer-Daten erstellt");
-        addListeners();
-        System.out.println("Listener hinzugefügt");
-        this.setContentPane(mainPanel);
-        this.pack();
-        System.out.println("GUI-Initialisierung abgeschlossen");
+
+        SwingUtilities.invokeLater(() -> {
+            createUIComponents();
+            System.out.println("UI-Komponenten erstellt");
+            fahrerMap = new HashMap<>();
+            csvHandler = new CSVHandler();
+            System.out.println("CSV-Handler erstellt");
+            initialisiereFahrerDaten();
+            System.out.println("Fahrer-Daten erstellt");
+            addListeners();
+            System.out.println("Listener hinzugefügt");
+            this.setContentPane(mainPanel);
+            this.pack();
+            System.out.println("GUI-Initialisierung abgeschlossen");
+
+// Startet den ExterneFahrtenThread in einem separaten invokeLater Aufruf, damit der Thread erst nach vollständiger GUI-Initialisierung startet
+            SwingUtilities.invokeLater(this::startExterneFahrtenThread);
+        });
+    }
+// Hilfsmethode zum Starten des ExterneFahrtenThreads
+    private void startExterneFahrtenThread() {
         ExterneFahrtenThread externeFahrten = new ExterneFahrtenThread(fahrerMap, this, dateformatter);
         externeFahrten.start();
         System.out.println("ExterneFahrtenThread gestartet");
 
-
     }
+
     // Methode initialisiert die Fahrerdaten und lädt sie in die GUI
     private void initialisiereFahrerDaten() {
         fahrerMap = new HashMap<>();
         List<Fahrer> fahrer = csvHandler.loadData();
         fahrerComboBox.removeAllItems();
         fahrerComboBox.addItem("Bitte Fahrer auswählen");
-        for (Fahrer f : fahrer){
+        for (Fahrer f : fahrer) {
             fahrerMap.put(f.getPersonalnummer(), f);
             fahrerComboBox.addItem(f.toString());
 
@@ -310,8 +319,8 @@ public class KilometererfassungGUI extends JFrame {
             LocalDate datum = LocalDate.parse(datumString, dateformatter);
 
             // Überprüft, ob das eingegebene Datum in der Zukunft liegt
-            if (datum.isAfter(LocalDate.now())){
-                JOptionPane.showMessageDialog(mainPanel,"Das Datum darf nicht in der Zukunft liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            if (datum.isAfter(LocalDate.now())) {
+                JOptionPane.showMessageDialog(mainPanel, "Das Datum darf nicht in der Zukunft liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
             // konvertiert die Kilometereingabe in einen Integer
             int km = Integer.parseInt(kilometer);
@@ -341,12 +350,13 @@ public class KilometererfassungGUI extends JFrame {
             JOptionPane.showMessageDialog(mainPanel, "Bitte geben Sie eine gültige Zahl für die Kilometer ein.", "Fehler", JOptionPane.ERROR_MESSAGE);
         }
     }
-// Aktualisiert die UI-Elemente für den gegebenen Fahrer
-    public void updateFahrerUI (Fahrer fahrer){
+
+    // Aktualisiert die UI-Elemente für den gegebenen Fahrer
+    public void updateFahrerUI(Fahrer fahrer) {
         SwingUtilities.invokeLater(() -> {
             updateFahrtenTabelle(fahrer);
             updateGesamtkilometer(fahrer);
-    });
+        });
     }
 
     // Aktualisiert die Fahrten-Tabelle für den ausgewählten Fahrer
@@ -363,27 +373,27 @@ public class KilometererfassungGUI extends JFrame {
         int gesamtKilometer = fahrer.getFahrten().stream().mapToInt(Fahrt::getKilometer).sum();
         gesamtkilometerLabel.setText("Gesamtkilometer: " + gesamtKilometer);
     }
-        // Aktualisiert die Fahrten-Tabelle und die Gesamtkilometer-Anzeige
-        private void fahrerAusgewaehlt() {
-            String ausgewaehlterFahrerString = (String) fahrerComboBox.getSelectedItem();
-            if (!"Bitte Fahrer auswählen".equals(ausgewaehlterFahrerString)) {
-                String personalnummer = ausgewaehlterFahrerString.split(" ")[0];
-                Fahrer ausgewaehlterFahrer = fahrerMap.get(personalnummer);
-                updateFahrtenTabelle(ausgewaehlterFahrer);
-                updateGesamtkilometer(ausgewaehlterFahrer);
-            } else {
 
-                // Tabelle leeren und Gesamtkilometer zurücksetzen, wenn kein Fahrer ausgewählt ist
-                DefaultTableModel model = (DefaultTableModel) fahrtenTable.getModel();
-                while (model.getRowCount() > 0) {
-                    model.removeRow(0);
-                }
-                gesamtkilometerLabel.setText("Gesamtkilometer: 0");
+    // Aktualisiert die Fahrten-Tabelle und die Gesamtkilometer-Anzeige
+    private void fahrerAusgewaehlt() {
+        String ausgewaehlterFahrerString = (String) fahrerComboBox.getSelectedItem();
+        if (!"Bitte Fahrer auswählen".equals(ausgewaehlterFahrerString)) {
+            String personalnummer = ausgewaehlterFahrerString.split(" ")[0];
+            Fahrer ausgewaehlterFahrer = fahrerMap.get(personalnummer);
+            updateFahrtenTabelle(ausgewaehlterFahrer);
+            updateGesamtkilometer(ausgewaehlterFahrer);
+        } else {
+
+            // Tabelle leeren und Gesamtkilometer zurücksetzen, wenn kein Fahrer ausgewählt ist
+            DefaultTableModel model = (DefaultTableModel) fahrtenTable.getModel();
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
             }
+            gesamtkilometerLabel.setText("Gesamtkilometer: 0");
         }
-
-
-
     }
+
+
+}
 
 
