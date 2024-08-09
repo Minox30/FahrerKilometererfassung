@@ -49,6 +49,9 @@ public class KilometererfassungGUI extends JFrame {
         this.setContentPane(mainPanel);
         this.pack();
         System.out.println("GUI-Initialisierung abgeschlossen");
+        ExterneFahrtenThread externeFahrten = new ExterneFahrtenThread(fahrerMap, this, dateformatter);
+        externeFahrten.start();
+        System.out.println("ExterneFahrtenThread gestartet");
 
 
     }
