@@ -36,6 +36,7 @@ public class ExterneFahrtenThread extends Thread {
                 // Überprüft, ob die Datei existiert
                 if (Files.exists(externeFahrten)) {
                     processFile();
+                    System.out.println("Externe Datei wurde eingelesen.");
                 }
 // Wartet 60 Sekunden bis zur nächsten Überprüfung
                 Thread.sleep(60000);
