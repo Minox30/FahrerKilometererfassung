@@ -44,6 +44,13 @@ public class Fahrer {
         Collections.sort(fahrten);
     }
 
+    // Methode zur Berechnung der Gesamtkilometer
+    public int berechneGesamtKilometer() {
+        return fahrten.stream()
+                .mapToInt(Fahrt::getKilometer)
+                .sum();
+    }
+
     @Override
     public String toString() {
         return personalnummer + " " + vorname + " " + nachname;

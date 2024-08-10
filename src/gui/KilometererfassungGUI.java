@@ -81,7 +81,7 @@ public class KilometererfassungGUI extends JFrame {
     // Methode zum Speichern und Beenden des Programms
     private void programmBeenden() {
         System.out.println("Daten werden gespeichert und das Programm beendet.");
-        ExterneFahrtenVerwaltung.startInstance(fahrerMap, this, dateformatter);
+        ExterneFahrtenVerwaltung.shutdownInstance();
         csvHandler.saveData(new ArrayList<>(fahrerMap.values()));
         System.exit(0);
     }
@@ -351,7 +351,7 @@ public class KilometererfassungGUI extends JFrame {
 
     // Aktualisiert die Anzeige der Gesamtkilometer für den gegebenen Fahrer
     private void updateGesamtkilometer(Fahrer fahrer) {
-        int gesamtKilometer = fahrer.getFahrten().stream().mapToInt(Fahrt::getKilometer).sum();
+        int gesamtKilometer = fahrer.berechneGesamtKilometer();
         gesamtkilometerLabel.setText("Gesamtkilometer: " + gesamtKilometer);
     }
 

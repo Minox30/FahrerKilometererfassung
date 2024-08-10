@@ -3,9 +3,11 @@ package dao;
 import model.Fahrt;
 import model.Fahrer;
 
+import javax.swing.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,29 +18,25 @@ public class FahrtenVerwaltung {
     private static final String CSV_File = "kilometer.csv";
     private static final DateTimeFormatter Date_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // Methode zum Laden der Daten aus der CSV-Datei
+    // Methode zum Laden der Fahrer- und Fahrtendaten aus der CSV-Datei
     public List<Fahrer> loadData() {
-        List<Fahrer> fahrer = new ArrayList<>();// Liste zur Speicherung der Fahrer
+        List<Fahrer> fahrer = new ArrayList<>();
         Map<String, Fahrer> fahrerMap = new HashMap<>();
         File file = new File(CSV_File);
 
         //Überprüft, ob die Datei existiert und falls nicht, wird diese erstellt.
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-                System.out.println("Neue CSV-Datei wurde erstellt: " + CSV_File);
-            } catch (IOException e) {
-                System.out.println("Fehler beim Erstellen der CSV-Datei" + e.getMessage());
-                return fahrer;
-            }
-            }
-            // Nutzung des BufferedReader zum Lesen der Datei.
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                String line;
-                // Zeilen werden so lange gelesen bis null zurückgegeben wird und somit das Ende der Datei erreicht ist.
-                while ((line = br.readLine()) != null) {
-                    // Der String line wird an jedem Komma geteilt und das Ergebnis in values gespeichert.
-                    String[] values = line.split(",");
+            zeigeFehlermeldung("Die Datei konnte nicht gefunden werden.");
+            return fahrer;
+        }
+        // Nutzung des BufferedReader zum Lesen der Datei.
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            // Zeilen werden so lange gelesen bis null zurückgegeben wird und somit das Ende der Datei erreicht ist.
+            while ((line = br.readLine()) != null) {
+                // Der String line wird an jedem Komma geteilt und das Ergebnis in values gespeichert.
+                String[] values = line.split(",");
+                try {
                     // Bei 3 enthaltenen Elementen handelt es sich um einen Fahrer.
                     if (values.length == 3) {
                         // Erstellt ein neues Fahrer-Objekt mit den in values enthaltenen Werten und fügt es der Liste fahrer hinzu.
@@ -53,15 +51,23 @@ public class FahrtenVerwaltung {
                         Fahrer f = fahrerMap.get(values[0]);
                         if (f != null) {
                             f.addFahrt(fahrt);
+                        } else {
+                            zeigeFehlermeldung("Kein passender Fahrer für Personalnummer " + values[0] + " gefunden.");
                         }
+                    } else {
+                        zeigeFehlermeldung("Ungültiges Zeilenformat in der Zeile " + line);
                     }
+                } catch (DateTimeParseException e) {
+                    zeigeFehlermeldung("Ungültiges Datumsformat in der Zeile " + line);
+                } catch (NumberFormatException e) {
+                    zeigeFehlermeldung("Ungültige Kilometerangabe in der Zeile " + line);
                 }
-
-            } catch (IOException e) {
-                System.out.println("Fehler beim Lesen der CSV-Datei" + e.getMessage());
             }
-            return fahrer;
+        } catch (IOException e) {
+            zeigeFehlermeldung("Fehler beim Lesen der Datei");
         }
+        return fahrer;
+    }
 
     // Methode zum Speichern der Daten in der CSV-Datei
     public void saveData(List<Fahrer> fahrer) {
@@ -69,8 +75,8 @@ public class FahrtenVerwaltung {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(CSV_File))) {
             for (Fahrer f : fahrer) {
                 // Schreibt die Fahrer-Informationen in die Datei.
-                bw.write(String.format("%s,%s,%s%n", f.getPersonalnummer(),f.getVorname(), f.getNachname()));
-                for (Fahrt fahrt : f.getFahrten()){
+                bw.write(String.format("%s,%s,%s%n", f.getPersonalnummer(), f.getVorname(), f.getNachname()));
+                for (Fahrt fahrt : f.getFahrten()) {
                     // Schreibt die Fahrt-Informationen in die Datei.
                     bw.write(String.format("%s,%s,%s,%s%n",
                             f.getPersonalnummer(),
@@ -81,7 +87,11 @@ public class FahrtenVerwaltung {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+           zeigeFehlermeldung("Fehler beim Speicher der Datei");
         }
+    }
+// Hilfsmethode zum Anzeigen von Fehlermeldungen
+    private void zeigeFehlermeldung(String nachricht) {
+        JOptionPane.showMessageDialog(null, nachricht, "Fehler", JOptionPane.ERROR_MESSAGE);
     }
 }
