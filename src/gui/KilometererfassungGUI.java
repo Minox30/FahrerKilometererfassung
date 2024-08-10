@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import static util.Fehlermeldung.zeigeFehlermeldung;
+
 public class KilometererfassungGUI extends JFrame {
     private JPanel mainPanel;
     private JComboBox fahrerComboBox;
@@ -37,21 +39,16 @@ public class KilometererfassungGUI extends JFrame {
     private DateTimeFormatter dateformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public KilometererfassungGUI() {
-        System.out.println("Starte GUI-Initialisierung");
 
         SwingUtilities.invokeLater(() -> {
             createUIComponents();
-            System.out.println("UI-Komponenten erstellt");
             fahrerMap = new HashMap<>();
             csvHandler = new FahrtenVerwaltung();
-            System.out.println("CSV-Handler erstellt");
             initialisiereFahrerDaten();
-            System.out.println("Fahrer-Daten erstellt");
             addListeners();
-            System.out.println("Listener hinzugefügt");
             this.setContentPane(mainPanel);
             this.pack();
-            System.out.println("GUI-Initialisierung abgeschlossen");
+
 
 // Startet den ExterneFahrtenThread in einem separaten invokeLater Aufruf, damit der Thread erst nach vollständiger GUI-Initialisierung startet
             SwingUtilities.invokeLater(this::startExterneFahrtenThread);
@@ -60,8 +57,6 @@ public class KilometererfassungGUI extends JFrame {
 // Hilfsmethode zum Starten des ExterneFahrtenThreads
     private void startExterneFahrtenThread() {
         ExterneFahrtenVerwaltung.startInstance(fahrerMap, this, dateformatter);
-        System.out.println("ExterneFahrtenThread gestartet");
-
     }
 
     // Methode initialisiert die Fahrerdaten und lädt sie in die GUI
@@ -74,13 +69,11 @@ public class KilometererfassungGUI extends JFrame {
             fahrerMap.put(f.getPersonalnummer(), f);
             fahrerComboBox.addItem(f.toString());
 
-            System.out.println("Fahrerdaten in GUI geladen");
         }
     }
 
     // Methode zum Speichern und Beenden des Programms
     private void programmBeenden() {
-        System.out.println("Daten werden gespeichert und das Programm beendet.");
         ExterneFahrtenVerwaltung.shutdownInstance();
         csvHandler.saveData(new ArrayList<>(fahrerMap.values()));
         System.exit(0);
@@ -244,15 +237,15 @@ public class KilometererfassungGUI extends JFrame {
                         dialog.dispose();
                         //Fehlermeldung bei bereits vorhandener Personalnummer
                     } else {
-                        JOptionPane.showMessageDialog(dialog, "Dieser Fahrer ist bereits vorhanden.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        zeigeFehlermeldung("Dieser Fahrer ist bereits vorhanden.");
                     }
                     // Fehlermeldung bei ungültiger Personalnummer
                 } else {
-                    JOptionPane.showMessageDialog(dialog, "Die Personalnummer muss aus 10 Ziffern bestehen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    zeigeFehlermeldung("Die Personalnummer muss aus 10 Ziffern bestehen.");
                 }
                 // Fehlermeldung bei nicht vollständig ausgefüllten Daten
             } else {
-                JOptionPane.showMessageDialog(dialog, "Bitte füllen sie alle Felder aus.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                zeigeFehlermeldung("Bitte füllen sie alle Felder aus.");
             }
         });
 
@@ -275,7 +268,7 @@ public class KilometererfassungGUI extends JFrame {
 
         // Überprüft, ob ein Fahrer ausgewählt wurde
         if ("Bitte Fahrer auswählen".equals(ausgewaehlterFahrerString)) {
-            JOptionPane.showMessageDialog(mainPanel, "Bitte wählen Sie zuerst einen Fahrer aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            zeigeFehlermeldung("Bitte wählen Sie zuerst einen Fahrer aus.");
             return;
         }
 
@@ -291,7 +284,7 @@ public class KilometererfassungGUI extends JFrame {
 
         // Überprüft die Vollständigkeit der Eingaben
         if (datumString.isEmpty() || startort.isEmpty() || kilometer.isEmpty()) {
-            JOptionPane.showMessageDialog(mainPanel, "Bitte füllen Sie alle Felder aus.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            zeigeFehlermeldung("Bitte füllen Sie alle Felder aus.");
             return;
         }
 
@@ -301,7 +294,7 @@ public class KilometererfassungGUI extends JFrame {
 
             // Überprüft, ob das eingegebene Datum in der Zukunft liegt
             if (datum.isAfter(LocalDate.now())) {
-                JOptionPane.showMessageDialog(mainPanel, "Das Datum darf nicht in der Zukunft liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                zeigeFehlermeldung("Das Datum darf nicht in der Zukunft liegen.");
             }
             // konvertiert die Kilometereingabe in einen Integer
             int km = Integer.parseInt(kilometer);
@@ -325,10 +318,10 @@ public class KilometererfassungGUI extends JFrame {
             JOptionPane.showMessageDialog(mainPanel, "Neue Fahrt wurde hinzugefügt", "Fahrt hinzugefügt", JOptionPane.INFORMATION_MESSAGE);
         } catch (DateTimeParseException e) {
             // Fängt Fehler beim Parsen des Datums ab
-            JOptionPane.showMessageDialog(mainPanel, "Bitte geben Sie das Datum im Format TT.MM.JJJJ ein.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            zeigeFehlermeldung("Bitte geben Sie das Datum im Format TT.MM.JJJJ ein.");
         } catch (NumberFormatException ex) {
             // Fängt Fehler beim Parsen der Kilometer ab
-            JOptionPane.showMessageDialog(mainPanel, "Bitte geben Sie eine gültige Zahl für die Kilometer ein.", "Fehler", JOptionPane.ERROR_MESSAGE);
+           zeigeFehlermeldung("Bitte geben Sie eine gültige Zahl für die Kilometer ein.");
         }
     }
 
