@@ -58,8 +58,7 @@ public class KilometererfassungGUI extends JFrame {
     }
 // Hilfsmethode zum Starten des ExterneFahrtenThreads
     private void startExterneFahrtenThread() {
-        ExterneFahrtenThread externeFahrten = new ExterneFahrtenThread(fahrerMap, this, dateformatter);
-        externeFahrten.start();
+        ExterneFahrtenThread.startInstance(fahrerMap, this, dateformatter);
         System.out.println("ExterneFahrtenThread gestartet");
 
     }
@@ -81,6 +80,7 @@ public class KilometererfassungGUI extends JFrame {
     // Methode zum Speichern und Beenden des Programms
     private void programmBeenden() {
         System.out.println("Daten werden gespeichert und das Programm beendet.");
+        ExterneFahrtenThread.startInstance(fahrerMap, this, dateformatter);
         csvHandler.saveData(new ArrayList<>(fahrerMap.values()));
         System.exit(0);
     }
@@ -177,34 +177,14 @@ public class KilometererfassungGUI extends JFrame {
 
         mainPanel.add(southPanel, BorderLayout.SOUTH);
     }
-
+// Fügt ActionListener zu UI-Komponenten hinzu
     private void addListeners() {
-
-        neuerFahrerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                neuerFahrerHinzufuegen();
-            }
-        });
-        fahrtHinzufuegenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                neueFahrtHinzufuegen();
-            }
-        });
-        beendenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                programmBeenden();
-            }
-        });
-        fahrerComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fahrerAusgewaehlt();
-            }
-        });
+        neuerFahrerButton.addActionListener(e -> SwingUtilities.invokeLater(this::neuerFahrerHinzufuegen));
+        fahrtHinzufuegenButton.addActionListener(e -> SwingUtilities.invokeLater(this::neueFahrtHinzufuegen));
+        beendenButton.addActionListener(e -> SwingUtilities.invokeLater(this::programmBeenden));
+        fahrerComboBox.addActionListener(e -> SwingUtilities.invokeLater(this::fahrerAusgewaehlt));
     }
+
 
     private void neuerFahrerHinzufuegen() {
 
