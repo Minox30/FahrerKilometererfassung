@@ -1,6 +1,7 @@
 package gui;
 
-import dao.CSVHandler;
+import dao.FahrtenVerwaltung;
+import dao.FahrtenVerwaltung;
 import model.Fahrer;
 import model.Fahrt;
 
@@ -30,7 +31,7 @@ public class KilometererfassungGUI extends JFrame {
     private JTable fahrtenTable;
     private JScrollPane fahrtenScrollPane;
     private JLabel gesamtkilometerLabel;
-    private CSVHandler csvHandler;
+    private FahrtenVerwaltung csvHandler;
 
     private Map<String, Fahrer> fahrerMap;
     private DateTimeFormatter dateformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -42,7 +43,7 @@ public class KilometererfassungGUI extends JFrame {
             createUIComponents();
             System.out.println("UI-Komponenten erstellt");
             fahrerMap = new HashMap<>();
-            csvHandler = new CSVHandler();
+            csvHandler = new FahrtenVerwaltung();
             System.out.println("CSV-Handler erstellt");
             initialisiereFahrerDaten();
             System.out.println("Fahrer-Daten erstellt");
@@ -58,7 +59,7 @@ public class KilometererfassungGUI extends JFrame {
     }
 // Hilfsmethode zum Starten des ExterneFahrtenThreads
     private void startExterneFahrtenThread() {
-        ExterneFahrtenThread.startInstance(fahrerMap, this, dateformatter);
+        ExterneFahrtenVerwaltung.startInstance(fahrerMap, this, dateformatter);
         System.out.println("ExterneFahrtenThread gestartet");
 
     }
@@ -80,7 +81,7 @@ public class KilometererfassungGUI extends JFrame {
     // Methode zum Speichern und Beenden des Programms
     private void programmBeenden() {
         System.out.println("Daten werden gespeichert und das Programm beendet.");
-        ExterneFahrtenThread.startInstance(fahrerMap, this, dateformatter);
+        ExterneFahrtenVerwaltung.startInstance(fahrerMap, this, dateformatter);
         csvHandler.saveData(new ArrayList<>(fahrerMap.values()));
         System.exit(0);
     }

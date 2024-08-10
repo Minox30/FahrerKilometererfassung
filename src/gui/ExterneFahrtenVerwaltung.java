@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 // Thread zur Verarbeitung von externen Fahrerdaten aus der "addfahrten.csv Datei
-public class ExterneFahrtenThread extends Thread {
+public class ExterneFahrtenVerwaltung extends Thread {
     // Name der Datei
     private static final String EXTERNE_FAHRTEN = "addfahrten.csv";
     // Pfad zur Datei
@@ -27,19 +27,19 @@ public class ExterneFahrtenThread extends Thread {
     // Flag zur Kontrolle der Ausführung des Threads
     private volatile boolean running = true;
     // Singleton-Instanz des Threads
-    private static ExterneFahrtenThread instance;
+    private static ExterneFahrtenVerwaltung instance;
 
     // Konstruktor für den ExterneFahrtenThread
-    private ExterneFahrtenThread(Map<String, Fahrer> fahrerMap, KilometererfassungGUI gui, DateTimeFormatter dateFormatter) {
+    private ExterneFahrtenVerwaltung(Map<String, Fahrer> fahrerMap, KilometererfassungGUI gui, DateTimeFormatter dateFormatter) {
         this.externeFahrten = Paths.get(EXTERNE_FAHRTEN);
         this.fahrerMap = fahrerMap;
         this.gui = gui;
         this.dateFormatter = dateFormatter;
     }
     // Gibt die ExterneFahrtenThread-Instanz zurück oder erstellt diese.
-public static ExterneFahrtenThread getInstance(Map<String, Fahrer> fahrerMap, KilometererfassungGUI gui, DateTimeFormatter dateFormatter) {
+public static ExterneFahrtenVerwaltung getInstance(Map<String, Fahrer> fahrerMap, KilometererfassungGUI gui, DateTimeFormatter dateFormatter) {
     if (instance == null) {
-        instance = new ExterneFahrtenThread(fahrerMap, gui, dateFormatter);
+        instance = new ExterneFahrtenVerwaltung(fahrerMap, gui, dateFormatter);
     }
     return instance;
 }

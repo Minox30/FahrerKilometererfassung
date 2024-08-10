@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CSVHandler {
+public class FahrtenVerwaltung {
 
     private static final String CSV_File = "kilometer.csv";
     private static final DateTimeFormatter Date_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
