@@ -2,8 +2,8 @@ package dao;
 
 import model.Fahrt;
 import model.Fahrer;
+import static util.Fehlermeldung.zeigeFehlermeldung;
 
-import javax.swing.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 
 public class FahrtenVerwaltung {
 
@@ -89,9 +91,5 @@ public class FahrtenVerwaltung {
         } catch (IOException e) {
            zeigeFehlermeldung("Fehler beim Speicher der Datei");
         }
-    }
-// Hilfsmethode zum Anzeigen von Fehlermeldungen
-    private void zeigeFehlermeldung(String nachricht) {
-        JOptionPane.showMessageDialog(null, nachricht, "Fehler", JOptionPane.ERROR_MESSAGE);
     }
 }
